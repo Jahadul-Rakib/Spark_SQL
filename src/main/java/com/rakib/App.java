@@ -25,6 +25,19 @@ public class App {
         long numberOfRows = dataSet.count();
         System.out.println("Total : " + numberOfRows);
 
+        //get data from column and row
+
+        //get Row
+        Row firstRow = dataSet.first();
+        System.out.println(firstRow);
+        //get column data
+        String thiredColumnData = String.valueOf(firstRow.get(2));
+        System.out.println(thiredColumnData);
+
+        //get Column data by column name
+        String firstColumData = firstRow.getAs("Name");
+        System.out.println(firstColumData);
+
         session.close();
     }
 }
