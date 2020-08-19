@@ -18,12 +18,7 @@ public class App {
                 .config("spark.sql.warehouse.dir", "file:///c:/temp/")
                 .getOrCreate();
 
-        Dataset<Row> dataSet = session.read().option("header", true).csv("src/main/resources/student.csv");
-        dataSet.createOrReplaceGlobalTempView("Student_Table");
-        dataSet.show();
 
-        long numberOfRows = dataSet.count();
-        System.out.println("Total : " + numberOfRows);
 
         session.close();
     }
