@@ -1,10 +1,11 @@
 package com.rakib;
 
-
-import org.apache.spark.api.java.function.FilterFunction;
+import org.apache.spark.sql.Column;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.functions;
+import static org.apache.spark.sql.functions.*;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,13 +22,28 @@ public class App {
 
         Dataset<Row> dataSet = session.read().option("header", true).csv("src/main/resources/student.csv");
 
-        //single expression by lamda
-        Dataset<Row> rowDataset = dataSet.filter((FilterFunction<Row>) row -> row.getAs("Subject").equals("IT"));
+        //Most Uses filter approach
+        Column columnSubject = dataSet.col("Subject");
+        Column columnScore = dataSet.col("Score");
+
+        Dataset<Row> rowDataset = dataSet.filter(columnSubject.startsWith("I")
+                                                 .and(columnScore.$less$eq(40))
+                                                 .or(columnScore.geq(60)));
         rowDataset.show();
-        //multiple expression by lamda
-        Dataset<Row> rowDataset1 = dataSet.filter((FilterFunction<Row>) row -> row.getAs("Subject").equals("IT")
-                && Integer.parseInt(row.getAs("Score")) > 40);
+
+        //Another Way using sql.function
+        Column subject = functions.col("Subject");
+        Column score = functions.col("Score");
+        Dataset<Row> rowDataset1 = dataSet.filter(subject.startsWith("H")
+                                          .and(score.geq(70)));
         rowDataset1.show();
+
+        //Another Way using static import
+        Column subjectS = col("Subject");
+        Column scoreS = col("Score");
+        Dataset<Row> rowDataset3 = dataSet.filter(subjectS.startsWith("H")
+                                          .and(scoreS.$greater(70)));
+        rowDataset3.show();
 
 
         session.close();
