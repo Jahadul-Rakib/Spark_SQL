@@ -20,23 +20,16 @@ public class App {
 
         Dataset<Row> dataSet = session.read().option("header", true).csv("src/main/resources/student.csv");
         dataSet.createOrReplaceGlobalTempView("Student_Table");
-        dataSet.show();
 
-        long numberOfRows = dataSet.count();
-        System.out.println("Total : " + numberOfRows);
+        //single condition expression
+        Dataset<Row> rowData = dataSet.filter("Subject = 'IT'");
+        rowData.show();
 
-        //get data from column and row
+        //multiple condition expression
+        Dataset<Row> dataset = dataSet.filter("Subject = 'Eng' AND Score <= 65");
+        dataset.show();
 
-        //get Row
-        Row firstRow = dataSet.first();
-        System.out.println(firstRow);
-        //get column data
-        String thiredColumnData = String.valueOf(firstRow.get(2));
-        System.out.println(thiredColumnData);
 
-        //get Column data by column name
-        String firstColumData = firstRow.getAs("Name");
-        System.out.println(firstColumData);
 
         session.close();
     }
